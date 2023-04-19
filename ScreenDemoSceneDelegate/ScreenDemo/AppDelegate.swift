@@ -13,10 +13,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        if #available(iOS 10.3, *) {
+               NotificationCenter.default.addObserver(self, selector: #selector(handleReviewRequest(_:)), name: Notification.Name(rawValue: "com.apple.storereviewcontroller.didfinish"), object: nil)
+           }
+        
         return true
     }
 
+    @objc func handleReviewRequest(_ notification: Notification) {
+        if let userInfo = notification.userInfo,
+            let resultString = userInfo["result"] as? String,
+            let result = Int(resultString) {
+            switch result {
+            case 0:
+                print("用户取消了评分")
+                // 在此处添加取消评分后需要执行的代码
+            case 1:
+                print("用户完成了评分")
+                // 在此处添加完成评分后需要执行的代码
+            default:
+                break
+            }
+        }
+    }
+    
     // MARK: UISceneSession Lifecycle
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
